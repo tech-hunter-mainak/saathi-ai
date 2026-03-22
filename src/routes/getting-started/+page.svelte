@@ -1,4 +1,5 @@
 <script lang="ts">
+	// ===== ORIGINAL STATE (UNCHANGED) =====
 	let email = $state('');
 	let otp = $state('');
 	let password = $state('');
@@ -9,11 +10,13 @@
 	let loading = $state(false);
 	let message = $state('');
 
+	// ✅ CRITICAL: keep EXACT same derived logic
 	const showEmail = $derived(step === 'email');
 	const showOtp = $derived(step === 'otp');
 	const showPassword = $derived(step === 'password');
 	const showDone = $derived(step === 'done');
 
+	// ===== ORIGINAL FUNCTIONS (UNCHANGED) =====
 	async function sendOtp() {
 		if (!email) {
 			message = 'Enter email';
@@ -26,14 +29,11 @@
 		try {
 			const res = await fetch('/api/sendotp', {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
+				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ email })
 			});
 
 			const data = await res.json();
-			console.log('SEND OTP:', data);
 
 			if (data.ok) {
 				step = 'otp';
@@ -41,8 +41,7 @@
 			} else {
 				message = data.error ?? 'Failed to send OTP';
 			}
-		} catch (e) {
-			console.error(e);
+		} catch {
 			message = 'Network error';
 		}
 
@@ -61,14 +60,11 @@
 		try {
 			const res = await fetch('/api/verifyotp', {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
+				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ email, otp })
 			});
 
 			const data = await res.json();
-			console.log('VERIFY OTP:', data);
 
 			if (data.ok) {
 				step = 'password';
@@ -76,8 +72,7 @@
 			} else {
 				message = data.error ?? 'Invalid OTP';
 			}
-		} catch (e) {
-			console.error(e);
+		} catch {
 			message = 'Network error';
 		}
 
@@ -101,14 +96,11 @@
 		try {
 			const res = await fetch('/api/signup', {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
+				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ email, password })
 			});
 
 			const data = await res.json();
-			console.log('SIGNUP:', data);
 
 			if (data.ok) {
 				step = 'done';
@@ -116,69 +108,76 @@
 			} else {
 				message = data.error ?? 'Signup failed';
 			}
-		} catch (e) {
-			console.error(e);
+		} catch {
 			message = 'Network error';
 		}
 
 		loading = false;
 	}
+
+	// ===== NEW FLOW STATE =====
+	let showIntro = $state(true);
+	let showModal = $state(false);
+	let showForm = $state(false);
+
+	let agreeChecked = $state(false);
+	let showCheckbox = $state(false);
+
+	function openModal() {
+		showIntro = false;
+		showModal = true;
+	}
+
+	function onModalClose() {
+		showModal = false;
+		showIntro = true;
+		agreeChecked = false;
+		showCheckbox = false;
+	}
+
+	function onAgree() {
+		// parent-level guard depends on parent's agreeChecked
+		if (!agreeChecked) return;
+		showModal = false;
+		showForm = true;
+		// important: step remains 'email' → flow preserved
+	}
+
+	// Components (kept in /src/GettingStarted/)
+	import Intro from '$lib/components/GettingStarted/Intro.svelte';
+	import PrivacyModal from '$lib/components/GettingStarted/PrivacyModal.svelte';
+	import SignupForm from '$lib/components/GettingStarted/SignupForm.svelte';
 </script>
 
-<div class="container">
-	<h2>Create Account</h2>
+{#if showIntro}
+	<Intro openModal={openModal} />
+{/if}
 
-	{#if showEmail}
-		<input type="email" placeholder="Enter email" bind:value={email} />
+{#if showModal}
+	<!-- bind so child updates reflect in parent -->
+	<PrivacyModal bind:showCheckbox bind:agreeChecked onAgree={onAgree} closeModal={onModalClose} />
+{/if}
 
-		<button onclick={sendOtp} disabled={loading}> Send OTP </button>
-	{/if}
-
-	{#if showOtp}
-		<input type="text" placeholder="Enter OTP" bind:value={otp} />
-
-		<button onclick={verifyOtp} disabled={loading}> Verify OTP </button>
-	{/if}
-
-	{#if showPassword}
-		<input type="password" placeholder="Create password" bind:value={password} />
-
-		<input type="password" placeholder="Confirm password" bind:value={confirmPassword} />
-
-		<button onclick={createAccount} disabled={loading}> Create Account </button>
-	{/if}
-
-	{#if showDone}
-		<p>Account created successfully.</p>
-	{/if}
-
-	<p>{message}</p>
-</div>
+{#if showForm}
+	<SignupForm
+		bind:email
+		bind:otp
+		bind:password
+		bind:confirmPassword
+		{showEmail}
+		{showOtp}
+		{showPassword}
+		{showDone}
+		sendOtp={sendOtp}
+		verifyOtp={verifyOtp}
+		createAccount={createAccount}
+		{loading}
+		{message}
+	/>
+{/if}
 
 <style>
-	.container {
-		width: 420px;
-		margin: 80px auto;
-		font-family: Arial;
-	}
-
-	input {
-		width: 100%;
-		padding: 10px;
-		margin: 10px 0;
-	}
-
-	button {
-		width: 100%;
-		padding: 10px;
-		background: #2563eb;
-		color: white;
-		border: none;
-		cursor: pointer;
-	}
-
-	button:disabled {
-		background: #9ca3af;
-		cursor: not-allowed;
+	:global(body) {
+		font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
 	}
 </style>
