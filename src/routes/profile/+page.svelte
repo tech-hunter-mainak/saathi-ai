@@ -3,15 +3,7 @@
 	import { goto } from '$app/navigation';
 
 	// ✅ Icons
-	import {
-		User,
-		Calendar,
-		VenusAndMars,
-		Globe,
-		MapPin,
-		Building2,
-		Briefcase
-	} from 'lucide-svelte';
+	import { User, Calendar, VenusAndMars, Globe, MapPin, Building2, Briefcase } from 'lucide-svelte';
 
 	let fullname = $state('');
 	let age = $state('');
@@ -117,31 +109,30 @@
 	}
 </script>
 
-<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 flex items-center justify-center px-4">
-	<div class="w-full max-w-4xl bg-white/90 backdrop-blur rounded-2xl shadow-xl border border-gray-200 p-6 sm:p-10">
+<div
+	class="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-50 to-gray-200 px-4"
+>
+	<div
+		class="w-full max-w-4xl rounded-2xl border border-gray-200 bg-white/90 p-6 shadow-xl backdrop-blur sm:p-10"
+	>
+		<h1 class="text-center text-3xl font-extrabold text-gray-800">Complete Your Profile</h1>
 
-		<h1 class="text-3xl font-extrabold text-center text-gray-800">
-			Complete Your Profile
-		</h1>
-
-		<p class="text-center text-gray-500 mt-2 text-sm">
+		<p class="mt-2 text-center text-sm text-gray-500">
 			Just a few details to personalize your experience
 		</p>
 
 		{#if loading}
-			<p class="text-center text-gray-500 mt-6">Loading profile...</p>
+			<p class="mt-6 text-center text-gray-500">Loading profile...</p>
 		{:else}
-
 			{#if error}
-				<div class="mt-6 text-sm text-red-500 text-center">{error}</div>
+				<div class="mt-6 text-center text-sm text-red-500">{error}</div>
 			{/if}
 
 			{#if message}
-				<div class="mt-6 text-sm text-green-600 text-center">{message}</div>
+				<div class="mt-6 text-center text-sm text-green-600">{message}</div>
 			{/if}
 
-			<div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-8">
-
+			<div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2">
 				<!-- INPUT COMPONENT STYLE -->
 				<div class="input-group">
 					<User class="icon" />
@@ -188,12 +179,11 @@
 			<button
 				on:click={saveProfile}
 				disabled={saving}
-				class="mt-8 w-full py-4 bg-indigo-600 text-white rounded-xl font-semibold 
-				hover:bg-indigo-700 transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-60"
+				class="mt-8 w-full rounded-xl bg-indigo-600 py-4 font-semibold text-white
+				shadow-md transition-all duration-200 hover:bg-indigo-700 hover:shadow-lg disabled:opacity-60"
 			>
 				{saving ? 'Saving...' : 'Save Profile'}
 			</button>
-
 		{/if}
 	</div>
 </div>

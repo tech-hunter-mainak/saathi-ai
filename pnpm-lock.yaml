@@ -23,6 +23,9 @@ importers:
       nodemailer:
         specifier: ^8.0.2
         version: 8.0.2
+      svelte-icons:
+        specifier: ^2.1.0
+        version: 2.1.0
     devDependencies:
       '@eslint/compat':
         specifier: ^2.0.2
@@ -1504,6 +1507,9 @@ packages:
       svelte:
         optional: true
 
+  svelte-icons@2.1.0:
+    resolution: {integrity: sha512-rHPQjweEc9fGSnvM0/4gA3pDHwyZyYsC5KhttCZRhSMJfLttJST5Uq0B16Czhw+HQ+HbSOk8kLigMlPs7gZtfg==}
+
   svelte@5.53.11:
     resolution: {integrity: sha512-GYmqRjRhJYLQBonfdfGAt28gkfWEShrtXKGXcFGneXi502aBE+I1dJcs/YQriByvP6xqXRz/OdBGC6tfvUQHyQ==}
     engines: {node: '>=18'}
@@ -2907,6 +2913,8 @@ snapshots:
       semver: 7.7.4
     optionalDependencies:
       svelte: 5.53.11
+
+  svelte-icons@2.1.0: {}
 
   svelte@5.53.11:
     dependencies:

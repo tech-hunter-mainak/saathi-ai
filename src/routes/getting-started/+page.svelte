@@ -150,12 +150,12 @@
 </script>
 
 {#if showIntro}
-	<Intro openModal={openModal} />
+	<Intro {openModal} />
 {/if}
 
 {#if showModal}
 	<!-- bind so child updates reflect in parent -->
-	<PrivacyModal bind:showCheckbox bind:agreeChecked onAgree={onAgree} closeModal={onModalClose} />
+	<PrivacyModal bind:showCheckbox bind:agreeChecked {onAgree} closeModal={onModalClose} />
 {/if}
 
 {#if showForm}
@@ -168,9 +168,9 @@
 		{showOtp}
 		{showPassword}
 		{showDone}
-		sendOtp={sendOtp}
-		verifyOtp={verifyOtp}
-		createAccount={createAccount}
+		{sendOtp}
+		{verifyOtp}
+		{createAccount}
 		{loading}
 		{message}
 	/>
@@ -178,6 +178,14 @@
 
 <style>
 	:global(body) {
-		font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+		font-family:
+			Inter,
+			ui-sans-serif,
+			system-ui,
+			-apple-system,
+			'Segoe UI',
+			Roboto,
+			'Helvetica Neue',
+			Arial;
 	}
 </style>

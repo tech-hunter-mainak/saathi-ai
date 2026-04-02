@@ -52,12 +52,10 @@ export const load: PageServerLoad = async (event) => {
 	/* 3. Insert mapping (ONLY if user)   */
 	/* ---------------------------------- */
 	if (userId) {
-		const { error: insertError } = await event.locals.supabase
-			.from('chat_sessions')
-			.insert({
-				user_id: userId,
-				session_id: sessionId
-			});
+		const { error: insertError } = await event.locals.supabase.from('chat_sessions').insert({
+			user_id: userId,
+			session_id: sessionId
+		});
 
 		if (insertError) {
 			console.warn('⚠️ Supabase insert failed:', insertError.message);
